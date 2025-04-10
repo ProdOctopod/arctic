@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import copy
 import logging
-import warnings
 from datetime import datetime as dt, timedelta
 
 import numpy as np
