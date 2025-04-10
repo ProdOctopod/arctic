@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import copy
 import logging
+import warnings
 from datetime import datetime as dt, timedelta
 
 import numpy as np
@@ -666,7 +667,7 @@ class TickStore(object):
                 # `string` in python2 and `bytes` in python3
                 raise UnhandledDtypeException("Casting object column to string failed")
             try:
-                array = array.astype(np.unicode_)
+                array = array.astype(np.str_)
             except (UnicodeDecodeError, SystemError):
                 # `UnicodeDecodeError` in python2 and `SystemError` in python3
                 array = np.array([s.decode('utf-8') for s in array])
@@ -724,16 +725,13 @@ class TickStore(object):
                 DTYPE: TickStore._str_dtype(array.dtype),
             }
             rtn[COLUMNS][col] = col_data
+
         rtn[INDEX] = Binary(
             lz4_compressHC(np.concatenate(
                 ([np.array(recs[index_name][0]).astype('datetime64[ms]').view('uint64')],
                  np.diff(
                      recs[index_name].astype('datetime64[ms]').view('uint64')))).tostring()))
-        # rtn[INDEX] = Binary(
-        #     lz4_compressHC(np.concatenate(
-        #         ([recs[index_name][0].astype('datetime64[ms]').view('uint64')],
-        #          np.diff(
-        #              recs[index_name].astype('datetime64[ms]').view('uint64')))).tobytes()))
+
         return rtn, final_image
 
     @staticmethod
