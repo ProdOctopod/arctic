@@ -1,6 +1,6 @@
-import random
-
 import pandas as pd
+import random
+import time
 
 from arctic import Arctic
 
@@ -9,7 +9,7 @@ def gen_dataframe_random(cols, rows):
     c = {}
     for col in range(cols):
         c[str(col)] = [round(random.uniform(-10000.0, 10000.0), 1) for r in range(rows)]
-    index = [range(rows)]
+    index = [i for i in range(rows)]
 
     return pd.DataFrame(data=c, index=index)
 
@@ -22,7 +22,7 @@ def gen_series_random(rows):
 def gen_dataframe_compressible(cols, rows):
     row = [round(random.uniform(-100.0, 100.0), 1) for r in range(cols)]
     data = [row] * rows
-    index = [range(rows)]
+    index = [i for i in range(rows)]
 
     return pd.DataFrame(data=data, index=index)
 
@@ -31,7 +31,7 @@ def gen_series_compressible(rows):
     d = round(random.uniform(-100.0, 100.0), 1)
     data = [d] * rows
 
-    index = [range(rows)]
+    index = [i for i in range(rows)]
 
     return pd.Series(data=data, index=index)
 

@@ -68,7 +68,7 @@ def gen_sparse_rows_for_range(n_rows, low, high, dense):
 
 def gen_one_minute_rows(n_rows, dense):
     data = {}
-    for header, header_range in ONE_MIN_ATTRIBUTES.iteritems():
+    for header, header_range in ONE_MIN_ATTRIBUTES.items():
         data[header] = gen_sparse_rows_for_range(n_rows, header_range[0], header_range[1], dense)
 
     return data
