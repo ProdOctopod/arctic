@@ -1,7 +1,7 @@
 import argparse
 import logging
 import os
-import pwd
+import getpass
 from multiprocessing import Pool
 
 from arctic.decorators import _get_host
@@ -13,7 +13,7 @@ from ..hosts import get_arctic_lib
 logger = logging.getLogger(__name__)
 
 # Use the UID rather than environment variables for auditing
-USER = pwd.getpwuid(os.getuid())[0]
+USER = getpass.getuser()
 
 
 def copy_symbols_helper(src, dest, log, force, splice):
