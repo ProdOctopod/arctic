@@ -713,6 +713,10 @@ class TickStore(object):
         rtn[END] = end
         rtn[START] = start
 
+        # Make sure the index is UTC and then *tz-naive*
+        if df.index.tz is not None:
+            df = df.tz_convert("UTC").tz_localize(None)
+
         logger.warning("NB treating all values as 'exists' - no longer sparse")
         rowmask = Binary(lz4_compressHC(np.packbits(np.ones(len(df), dtype='uint8')).tobytes()))
 
@@ -731,11 +735,10 @@ class TickStore(object):
             }
             rtn[COLUMNS][col] = col_data
 
-        rtn[INDEX] = Binary(
-            lz4_compressHC(np.concatenate(
-                ([np.array(recs[index_name][0]).astype('datetime64[ms]').view('uint64')],
-                 np.diff(
-                     recs[index_name].astype('datetime64[ms]').view('uint64')))).tostring()))
+        ms = recs[index_name].astype('datetime64[ms]').view('uint64')
+        first, rest = ms[0], np.diff(ms)
+        packed = np.concatenate(([first], rest)).tobytes()
+        rtn[INDEX] = Binary(lz4_compressHC(packed))
 
         return rtn, final_image
 
