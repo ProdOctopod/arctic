@@ -334,7 +334,9 @@ class TickStore(object):
             raise NoDataFoundException("No Data found for {} in range: {}".format(symbol, date_range))
         rtn = self._pad_and_fix_dtypes(rtn, column_dtypes)
 
-        index = pd.DatetimeIndex(np.concatenate(rtn[INDEX]).astype('datetime64[ms]'), tz='UTC')
+        # Pandas 1.5.3 compatability: Upcast to nanoseconds so that the range compare works when the range is higher precision than milliseconds.
+        ms = np.concatenate(rtn[INDEX]).astype("uint64")
+        index = pd.to_datetime(ms, unit="ms", utc=True)
         if columns is None:
             columns = [x for x in rtn.keys() if x not in (INDEX, 'SYMBOL')]
         if multiple_symbols and 'SYMBOL' not in columns:
@@ -352,13 +354,17 @@ class TickStore(object):
 
         t = (dt.now() - perf_start).total_seconds()
         logger.info("Got data in %s secs, creating DataFrame..." % t)
-        if pd.__version__.startswith("0.") or pd.__version__.startswith("1.0"):
-            mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
+        if pd.__version__.startswith("2."):
+            data = {col: arr for col, arr in zip(columns, arrays)}
+            rtn = pd.DataFrame(data=data, index=index)
         else:
-            # 4th argument removed + new argument typ is mandatory
-            mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
+            if pd.__version__.startswith("0.") or pd.__version__.startswith("1.0"):
+                mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
+            else:
+                # 4th argument removed + new argument typ is mandatory
+                mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
+            rtn = pd.DataFrame(mgr)
 
-        rtn = pd.DataFrame(mgr)
         # Present data in the user's default TimeZone
         rtn.index = rtn.index.tz_convert(mktz())
 
