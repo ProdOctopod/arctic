@@ -337,7 +337,10 @@ class Arctic(object):
             del self._library_cache[library]
             del self._library_cache[lib.get_name()]
 
-        self._cache.delete_item_from_key('list_libraries', self._sanitize_lib_name(library))
+        with warnings.catch_warnings():
+            # I wasn't sure which one to use, for now I will just supress the warning.
+            warnings.filterwarnings("ignore", message="update is deprecated. Use replace_one, update_one or update_many instead.")
+            self._cache.delete_item_from_key('list_libraries', self._sanitize_lib_name(library))
 
     def get_library(self, library):
         """
