@@ -354,16 +354,12 @@ class TickStore(object):
 
         t = (dt.now() - perf_start).total_seconds()
         logger.info("Got data in %s secs, creating DataFrame..." % t)
-        if pd.__version__.startswith("2."):
-            data = {col: arr for col, arr in zip(columns, arrays)}
-            rtn = pd.DataFrame(data=data, index=index)
+        if pd.__version__.startswith("0.") or pd.__version__.startswith("1.0"):
+            mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
         else:
-            if pd.__version__.startswith("0.") or pd.__version__.startswith("1.0"):
-                mgr = _arrays_to_mgr(arrays, columns, index, columns, dtype=None)
-            else:
-                # 4th argument removed + new argument typ is mandatory
-                mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
-            rtn = pd.DataFrame(mgr)
+            # 4th argument removed + new argument typ is mandatory
+            mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
+        rtn = pd.DataFrame(mgr)
 
         # Present data in the user's default TimeZone
         rtn.index = rtn.index.tz_convert(mktz())
