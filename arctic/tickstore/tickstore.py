@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import copy
 import logging
+import warnings
 from datetime import datetime as dt, timedelta
 
 import numpy as np
@@ -359,7 +360,16 @@ class TickStore(object):
         else:
             # 4th argument removed + new argument typ is mandatory
             mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
-        rtn = pd.DataFrame(mgr)
+
+        with warnings.catch_warnings():
+            # I looked at doing the following above, but the dataframe creation is very slow, perhaps because of the zip?
+            # if pd.__version__.startswith("2."):
+            #     data = {col: arr for col, arr in zip(columns, arrays)}
+            #     rtn = pd.DataFrame(data=data, index=index)
+            warnings.filterwarnings(
+                "ignore",
+                message="Passing a ArrayManager to DataFrame is deprecated and will raise in a future version. Use public APIs instead.")
+            rtn = pd.DataFrame(mgr)
 
         # Present data in the user's default TimeZone
         rtn.index = rtn.index.tz_convert(mktz())
