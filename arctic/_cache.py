@@ -1,6 +1,6 @@
 import logging
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from pymongo.errors import OperationFailure
 
@@ -66,7 +66,11 @@ class Cache:
             cache_settings = self._get_cache_settings()
             expiry_period = cache_settings['cache_expiry'] if cache_settings else DEFAULT_CACHE_EXPIRY
 
-        return datetime.utcnow() < cached_data['date'] + timedelta(seconds=expiry_period)
+        cached_date = cached_data['date']
+        if cached_date.tzinfo is None:
+            cached_date = cached_date.replace(tzinfo=timezone.utc)
+
+        return datetime.now(timezone.utc) < cached_date + timedelta(seconds=expiry_period)
 
     def get(self, key, newer_than_secs=None):
         """
@@ -95,7 +99,7 @@ class Cache:
         try:
             self._cachecol.update_one(
                 {"type": key},
-                {"$set": {"type": key, "date": datetime.utcnow(), "data": data}},
+                {"$set": {"type": key, "date": datetime.now(timezone.utc), "data": data}},
                 upsert=True
             )
         except OperationFailure as op:
@@ -108,7 +112,7 @@ class Cache:
                 {
                     # Add to set will not add the same library again to the list unlike set.
                     '$addToSet': {'data': append_data},
-                    '$setOnInsert': {'type': key, 'date': datetime.utcnow()}
+                    '$setOnInsert': {'type': key, 'date': datetime.now(timezone.utc)}
                 },
                 upsert=True
             )
