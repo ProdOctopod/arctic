@@ -143,9 +143,14 @@ def test_pandas_timestamp_issue():
         assert(ts.utctimetuple().tm_hour == 21)
         assert(ts.timetuple().tm_hour == 16)
         assert(ts.to_pydatetime().timetuple().tm_hour == 16)
-    else:
+    elif sys.version_info < (3, 12, 10):
+        # Not sure when this was fixed, but works in Python 3.12.10
         assert(ts.to_pydatetime().utctimetuple().tm_hour == 21)
         assert(ts.timetuple().tm_hour == 16)
         # fails
         with pytest.raises(TypeError):
             ts.utctimetuple()
+    else:
+        assert (ts.utctimetuple().tm_hour == 21)
+        assert (ts.timetuple().tm_hour == 16)
+        assert (ts.to_pydatetime().timetuple().tm_hour == 16)
