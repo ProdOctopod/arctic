@@ -64,7 +64,8 @@ def fancy_group_by(df, grouping_level=0, aggregate_level=1, method='last', max_=
     # The sort order must be correct in order of grouping_level -> aggregate_level for the aggregation methods
     # to work properly. We can check the sortdepth to see if this is in fact the case and resort if necessary.
     # TODO: this might need tweaking if the levels are around the wrong way
-    if df.index.lexsort_depth < (aggregate_level + 1):
+    lexsort_depth = getattr(df.index, 'lexsort_depth', 0)
+    if lexsort_depth < (aggregate_level + 1):
         df = df.sort_index(level=grouping_level)
 
     gb = df.groupby(level=grouping_level)
@@ -115,7 +116,8 @@ def multi_index_insert_row(df, index_row, values_row):
                                   codes=[[0] for i in index_row])
     row = pd.DataFrame(values_row, index=row_index, columns=df.columns)
     df = pd.concat((df, row))
-    if df.index.lexsort_depth == len(index_row) and df.index[-2] < df.index[-1]:
+    lexsort_depth = getattr(df.index, 'lexsort_depth', 0)
+    if lexsort_depth == len(index_row) and df.index[-2] < df.index[-1]:
         # We've just appended a row to an already-sorted dataframe
         return df
     # The df wasn't sorted or the row has to be put in the middle somewhere
