@@ -182,6 +182,9 @@ class FrametoArraySerializer(Serializer):
         if (len(df.index.names) > 1 and None in df.index.names) or None in list(df.columns.values):
             raise Exception("All columns and indexes must be named")
 
+        if df.empty and df.columns.equals(pd.RangeIndex(0)):
+            df.columns = pd.Index([], dtype='object')  # Normalize for roundtrip consistency
+
         if df.index.names != [None]:
             index = df.index.names
             df = df.reset_index()
