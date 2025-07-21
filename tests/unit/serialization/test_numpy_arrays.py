@@ -79,14 +79,14 @@ def test_empty_columns():
 
 def test_string_cols_with_nans():
     f = FrameConverter()
-    df = pd.DataFrame(data={'one': ['a', 'b', 'c', np.NaN]})
+    df = pd.DataFrame(data={'one': ['a', 'b', 'c', np.nan]})
 
     assert(df.equals(f.objify(f.docify(df))))
 
 
 def test_objify_with_missing_columns():
     f = FrameConverter()
-    df = pd.DataFrame(data={'one': ['a', 'b', 'c', np.NaN]})
+    df = pd.DataFrame(data={'one': ['a', 'b', 'c', np.nan]})
     res = f.objify(f.docify(df), columns=['one', 'two'])
     assert res['one'].equals(df['one'])
     assert all(res['two'].isnull())
