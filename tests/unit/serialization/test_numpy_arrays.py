@@ -57,7 +57,7 @@ def test_with_index():
 def test_with_nans():
     df = pd.DataFrame(np.random.randint(0, 100, size=(100, 4)),
                       columns=list('ABCD'))
-    df['A'] = np.NaN
+    df['A'] = np.nan
     n = FrametoArraySerializer()
     a = n.serialize(df)
     assert_frame_equal_(df, n.deserialize(a))
