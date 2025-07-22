@@ -1196,7 +1196,7 @@ def test_write_metadata_followed_by_append(library, fw_pointers_cfg):
             library._prune_previous_versions(symbol, 0)
 
             v = library.read(symbol)
-            assert_frame_equal_(v.data, mydf_a.append(mydf_b), check_freq=False)
+            assert_frame_equal_(v.data, pd.concat([mydf_a, mydf_b]), check_freq=False)
             assert v.metadata == {'field_c': 1}
             assert library._read_metadata(symbol).get('version') == 3
             assert_frame_equal_(library.read(symbol, as_of=1).data, mydf_a, check_freq=False)
