@@ -362,7 +362,7 @@ class TickStore(object):
             mgr = _arrays_to_mgr(arrays, columns, index, dtype=None, typ="array")
 
         with warnings.catch_warnings():
-            # I looked at doing the following above, but the dataframe creation is very slow, perhaps because of the zip?
+            # PY31210: I looked at doing the following above, but the dataframe creation is very slow, perhaps because of the zip?
             # if pd.__version__.startswith("2."):
             #     data = {col: arr for col, arr in zip(columns, arrays)}
             #     rtn = pd.DataFrame(data=data, index=index)

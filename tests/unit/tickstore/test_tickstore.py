@@ -18,7 +18,7 @@ from arctic.tickstore.tickstore import TickStore, IMAGE_DOC, IMAGE, START, \
     DTYPE, END, COUNT, SYMBOL, COLUMNS, ROWMASK, DATA, INDEX, IMAGE_TIME
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="INSUFFICIENT CALLS, only get one call in second call_args_list.")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: INSUFFICIENT CALLS, only get one call in second call_args_list.")
 def test_mongo_date_range_query():
     self = create_autospec(TickStore)
     self._collection = create_autospec(Collection)

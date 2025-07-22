@@ -228,7 +228,7 @@ DUMMY_DATA = [
               ]
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="BAD RANGE, Has the meaning of the flags changed?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: BAD RANGE, Has the meaning of the flags changed?")
 def test_date_range(tickstore_lib):
     tickstore_lib.write('SYM', DUMMY_DATA)
     df = tickstore_lib.read('SYM', date_range=DateRange(20130101, 20130103), columns=None)
@@ -282,7 +282,7 @@ def test_date_range(tickstore_lib):
         assert_array_equal(df['b'].values, np.array([]))
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, f.call_args_list is not called.")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, f.call_args_list is not called.")
 def test_date_range_end_not_in_range(tickstore_lib):
     DUMMY_DATA = [
                   {'a': 1.,

@@ -67,7 +67,7 @@ def test_should_return_data_when_date_range_falls_in_a_single_underlying_library
     assert_frame_equal_(df, res.tz_convert(mktz('Europe/London')), check_freq=False)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_should_return_data_when_date_range_spans_libraries(toplevel_tickstore, arctic):
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)
@@ -86,7 +86,7 @@ def test_should_return_data_when_date_range_spans_libraries(toplevel_tickstore, 
     assert_frame_equal(expected_df, res.tz_convert(mktz('Europe/London')))
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_should_return_data_when_date_range_spans_libraries_even_if_one_returns_nothing(toplevel_tickstore, arctic):
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)
@@ -156,7 +156,7 @@ def test_should_successfully_do_a_roundtrip_write_and_read_spanning_multiple_und
     assert_frame_equal(data[dt(2011, 1, 1): dt(2011, 2, 1)], res.tz_convert(mktz('Europe/London')))
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 @pytest.mark.parametrize(('start', 'end', 'startr', 'endr'),
                          [(dt(2010, 1, 1), dt(2011, 12, 31), 0, 10),
                           (dt(2010, 1, 1), dt(2010, 12, 31), 0, 8),
@@ -177,7 +177,7 @@ def test_should_list_symbols_from_the_underlying_library(toplevel_tickstore, arc
     assert expected_symbols == toplevel_tickstore.list_symbols(DateRange(start=start, end=end))
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_should_add_underlying_libraries_when_intialized(arctic):
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)
@@ -190,7 +190,7 @@ def test_should_add_underlying_libraries_when_intialized(arctic):
     assert expected_results == results
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_should_write_top_level_with_list_of_dicts(arctic):
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)
@@ -207,7 +207,7 @@ def test_should_write_top_level_with_list_of_dicts(arctic):
     assert_frame_equal_(expected[dt(2010, 12, 1): dt(2010, 12, 31)], res.tz_convert(mktz('Europe/London')), check_freq=False)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_should_write_top_level_with_correct_timezone(arctic):
     # Write timezone aware data and read back in UTC
     utc = mktz('UTC')
@@ -266,7 +266,7 @@ def test_get_libraries_no_data_raises_exception_tzinfo_given(toplevel_tickstore,
         toplevel_tickstore._get_libraries(date_range)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, _get_library_metadata returns first DateRange as an overlap of second?")
 def test_get_library_metadata(arctic):
     arctic.initialize_library('FEED_2010.LEVEL1', tickstore.TICK_STORE_TYPE)
     arctic.initialize_library('FEED_2011.LEVEL1', tickstore.TICK_STORE_TYPE)

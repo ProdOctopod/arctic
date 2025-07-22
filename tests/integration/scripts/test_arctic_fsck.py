@@ -135,7 +135,7 @@ def test_cleanup_orphaned_chunk_doesnt_break_versions(mongo_host, library, data,
         assert mongo_count(library._collection.versions) == 0
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, no 'parent' in dict")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, no 'parent' in dict")
 @pytest.mark.parametrize(
     ['dry_run', 'data', 'fw_pointers_config'],
     [(x, y, z) for (x, y, z) in itertools.product(
@@ -172,7 +172,7 @@ def test_cleanup_orphaned_snapshots(mongo_host, library, data, dry_run, fw_point
             assert not len(library._collection.versions.find_one({})['parent'])
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, no 'parent' in dict")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, no 'parent' in dict")
 @pytest.mark.parametrize(
     ['dry_run', 'data', 'fw_pointers_config'],
     [(x, y, z) for (x, y, z) in itertools.product(
@@ -206,7 +206,7 @@ def test_cleanup_orphaned_snapshots_nop(mongo_host, library, data, dry_run, fw_p
             assert len(library._collection.versions.find_one({})['parent'])
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="NO IDEA, no 'parent' in dict")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: NO IDEA, no 'parent' in dict")
 @pytest.mark.parametrize(
     ['dry_run', 'data', 'fw_pointers_config'],
     [(x, y, z) for (x, y, z) in itertools.product(

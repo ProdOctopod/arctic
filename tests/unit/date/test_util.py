@@ -144,7 +144,7 @@ def test_pandas_timestamp_issue():
         assert(ts.timetuple().tm_hour == 16)
         assert(ts.to_pydatetime().timetuple().tm_hour == 16)
     elif sys.version_info < (3, 12, 10):
-        # Not sure when this was fixed, but works in Python 3.12.10
+        # PY31210: Not sure when this was fixed, but works in Python 3.12.10
         assert(ts.to_pydatetime().utctimetuple().tm_hour == 21)
         assert(ts.timetuple().tm_hour == 16)
         # fails

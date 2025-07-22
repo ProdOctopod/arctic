@@ -960,7 +960,7 @@ def test_daterange_when_end_beyond_chunk_index_no_start(library):
     assert_range_slice(library, df, DateRange(end=dt(2015, 8, 12)))
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="BAD TEST, no end date_range supplied so cannot generate ValueError")
+@pytest.mark.skipif(sys.version_info >= (3, 12, 10), reason="PY31210: BAD TEST, no end date_range supplied so cannot generate ValueError")
 def test_daterange_fails_with_timezone_start(library):
     df = read_csv(StringIO("""2015-08-10 00:00:00,200005,1.0
                               2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
