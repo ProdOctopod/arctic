@@ -1,3 +1,4 @@
+import pandas as pd
 import random
 import time
 from datetime import datetime, timedelta
@@ -26,7 +27,8 @@ class Appender(object):
                 # Randomy length dataframe to keep appending to
                 df = DataFrame({'v': [self.last]}, [datetime.now()])
                 for i in range(random.randint(1, 10)):
-                    df = df.append(DataFrame({'v': [self.last + i]}, [datetime.now()]))
+                    tests_df = DataFrame({'v': [self.last + i]}, [datetime.now()])
+                    df = pd.concat([df, tests_df])
                 self.last + i
                 df.index.name = 'index'
                 self.lib.append('symbol', df)

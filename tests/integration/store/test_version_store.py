@@ -957,17 +957,19 @@ def test_prunes_doesnt_prune_snapshots_fully_different_tss(library, fw_pointers_
 
 @pytest.mark.parametrize('fw_pointers_cfg', [FwPointersCfg.DISABLED, FwPointersCfg.HYBRID, FwPointersCfg.ENABLED])
 def test_prunes_previous_version_append_interaction(library, fw_pointers_cfg):
-    with FwPointersCtx(fw_pointers_cfg):
+    with (FwPointersCtx(fw_pointers_cfg)):
         ts = ts1
-        ts2 = ts1.append(pd.DataFrame(index=[ts.index[-1] + dtd(days=1),
-                                             ts.index[-1] + dtd(days=2), ],
-                                      data=[3.7, 3.8],
-                                      columns=['near']))
+        ts2 = pd.DataFrame(index=[ts.index[-1] + dtd(days=1),
+                           ts.index[-1] + dtd(days=2), ],
+                           data=[3.7, 3.8],
+                           columns=['near'])
+        ts2 = pd.concat([ts2, ts1])
         ts2.index.name = ts1.index.name
-        ts3 = ts.append(pd.DataFrame(index=[ts2.index[-1] + dtd(days=1),
-                                            ts2.index[-1] + dtd(days=2)],
-                                     data=[4.8, 4.9],
-                                     columns=['near']))
+        ts3 = pd.DataFrame(index=[ts2.index[-1] + dtd(days=1),
+                           ts2.index[-1] + dtd(days=2)],
+                           data=[4.8, 4.9],
+                           columns=['near'])
+        ts3 = pd.concat([ts3, ts])
         ts3.index.name = ts1.index.name
         ts4 = ts
         ts5 = ts2
@@ -1221,7 +1223,7 @@ def test_write_metadata_after_append(library, fw_pointers_cfg):
             library.append(symbol, data=mydf_b, metadata={'field_a': 2})  # creates version 2
             library.write_metadata(symbol, metadata={'field_b': 1})  # creates version 3
             v = library.read(symbol)
-            assert_frame_equal_(v.data, mydf_a.append(mydf_b), check_freq=False)
+            assert_frame_equal_(v.data, pd.concat([mydf_a, mydf_b]), check_freq=False)
             assert v.metadata == {'field_b': 1}
             assert library._read_metadata(symbol).get('version') == 3
 
@@ -1350,7 +1352,7 @@ def test_restore_version_followed_by_append(library, fw_pointers_cfg):
             time.sleep(2)
 
             item = library.read(symbol)
-            assert_frame_equal_(item.data, mydf_a.append(mydf_c), check_freq=False)
+            assert_frame_equal_(item.data, pd.concat([mydf_a, mydf_c]), check_freq=False)
             assert item.metadata == {'field_c': 3}
             assert library._read_metadata(symbol).get('version') == 4
 

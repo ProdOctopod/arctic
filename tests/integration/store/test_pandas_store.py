@@ -237,7 +237,7 @@ def test_append_pandas_multi_columns_dataframe(library):
 
     saved = library.read('test')
 
-    df = df.append(df2)
+    df = pd.concat([df, df2])
     assert df.columns.equal_levels(saved.data.columns)
     assert np.all(saved.data.columns == df.columns)
     assert np.all(saved.data.columns.names == df.columns.names)
@@ -255,7 +255,7 @@ def test_append_pandas_multi_columns_dataframe_new_column(library):
 
     saved = library.read('test')
 
-    df = df.append(df2)
+    df = pd.concat([df, df2])
     columns = list(itertools.product(["bar", "baz", "foo", "qux"], ["one", "two"]))
     assert np.all(saved.data[columns] == df[columns]).all()
     assert np.all(saved.data['bar', 'three'][2:] == df['bar', 'three'][2:])
@@ -336,7 +336,7 @@ def test_append_pandas_dataframe(library):
     library.write('pandas', df)
     library.append('pandas', df2)
     saved_df = library.read('pandas').data
-    assert np.all(df.append(df2).values == saved_df.values)
+    assert np.all(pd.concat([df, df2]).values == saved_df.values)
 
 
 def test_empty_dataframe_multindex(library):
@@ -354,7 +354,7 @@ def test_dataframe_append_empty(library):
     library.write('pandas', df)
     library.append('pandas', df2)
     saved_df = library.read('pandas').data
-    assert np.all(df.append(df2).values == saved_df.values)
+    assert np.all(pd.concat([df, df2]).values == saved_df.values)
 
 
 def test_empy_dataframe_append(library):
@@ -363,7 +363,7 @@ def test_empy_dataframe_append(library):
     library.write('pandas', df)
     library.append('pandas', df2)
     saved_df = library.read('pandas').data
-    assert np.all(df.append(df2).values == saved_df.values)
+    assert np.all(pd.concat([df, df2]).values == saved_df.values)
 
 
 def test_dataframe_append_empty_multiindex(library):
@@ -372,7 +372,7 @@ def test_dataframe_append_empty_multiindex(library):
     library.write('pandas', df)
     library.append('pandas', df2)
     saved_df = library.read('pandas').data
-    assert np.all(df.append(df2).values == saved_df.values)
+    assert np.all(pd.concat([df, df2]).values == saved_df.values)
     assert np.all(df.index.names == saved_df.index.names)
 
 
@@ -382,7 +382,7 @@ def test_empty_dataframe_append_multiindex(library):
     library.write('pandas', df)
     library.append('pandas', df2)
     saved_df = library.read('pandas').data
-    assert np.all(df.append(df2).values == saved_df.values)
+    assert np.all(pd.concat([df, df2]).values == saved_df.values)
     assert np.all(df.index.names == saved_df.index.names)
 
 
