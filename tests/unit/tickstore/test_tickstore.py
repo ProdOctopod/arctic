@@ -1,4 +1,4 @@
-from datetime import datetime as dt
+from datetime import datetime as dt, timezone
 
 import numpy as np
 import pandas as pd
@@ -95,7 +95,7 @@ def test_tickstore_to_bucket_with_image():
     assert get_coldata(bucket[COLUMNS]['A']) == ([124, 125], [1, 1, 0, 0, 0, 0, 0, 0])
     assert get_coldata(bucket[COLUMNS]['B']) == ([27.2], [0, 1, 0, 0, 0, 0, 0, 0])
     assert get_coldata(bucket[COLUMNS]['D']) == ([0], [1, 0, 0, 0, 0, 0, 0, 0])
-    index = [dt.fromtimestamp(int(i/1000)).replace(tzinfo=mktz(tz)) for i in
+    index = [dt.fromtimestamp(int(i/1000), tz=timezone.utc).astimezone(mktz(tz)) for i in
              list(np.cumsum(np.frombuffer(decompress(bucket[INDEX]), dtype='uint64')))]
     assert index == [i['index'] for i in data]
     assert bucket[COLUMNS]['A'][DTYPE] == 'int64'
@@ -160,7 +160,7 @@ def test_tickstore_pandas_to_bucket_image():
     assert np.isnan(values[1])
     assert values[0] == 1 and values[2] == 1
     assert rowmask == [1, 1, 1, 0, 0, 0, 0, 0]
-    index = [dt.fromtimestamp(int(i/1000)).replace(tzinfo=mktz(tz)) for i in
+    index = [dt.fromtimestamp(int(i/1000), tz=timezone.utc).astimezone(mktz(tz)) for i in
              list(np.cumsum(np.frombuffer(decompress(bucket[INDEX]), dtype='uint64')))]
     assert index == tick_index
     assert bucket[COLUMNS]['A'][DTYPE] == 'int64'
