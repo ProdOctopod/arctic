@@ -1,5 +1,5 @@
 import datetime
-from datetime import datetime as dt, timedelta as dtd
+from datetime import datetime as dt, timedelta as dtd, timezone
 
 import bson
 import pymongo
@@ -201,7 +201,7 @@ def test_prune_previous_versions_0_timeout():
     self._versions.with_options.return_value.find.__name__ = 'find'
     self._versions.with_options.return_value.find.return_value = []
     with patch('arctic.store.version_store.dt') as dt:
-        dt.utcnow.return_value = datetime.datetime(2013, 10, 1)
+        dt.now.return_value = datetime.datetime(2013, 10, 1).replace(tzinfo=timezone.utc)
         VersionStore._find_prunable_version_ids(self, sentinel.symbol, keep_mins=0)
     assert self._versions.with_options.call_args_list == [call(read_preference=ReadPreference.PRIMARY)]
     assert self._versions.with_options.return_value.find.call_args_list == [

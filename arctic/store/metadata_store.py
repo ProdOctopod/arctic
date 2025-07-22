@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime as dt
+from datetime import datetime as dt, timezone
 
 import bson
 import pandas as pd
@@ -175,7 +175,7 @@ class MetadataStore(BSONStore):
             with symbol names as headers and timestamps as indices
             (the same format as output of read_history)
             Example:
-                [pandas.DataFrame({'symbol': [{}]}, [datetime.datetime.utcnow()])]
+                [pandas.DataFrame({'symbol': [{}]}, [datetime.datetime.now(timezone.utc)])]
         """
         documents = []
         for dataframe in collection:
@@ -209,10 +209,10 @@ class MetadataStore(BSONStore):
             to be persisted
         start_time : `datetime.datetime`
             when metadata becomes effective
-            Default: datetime.datetime.utcnow()
+            Default: datetime.datetime.now(timezone.utc)
         """
         if start_time is None:
-            start_time = dt.utcnow()
+            start_time = dt.now(timezone.utc)
         old_metadata = self.find_one({'symbol': symbol}, sort=[('start_time', pymongo.DESCENDING)])
         if old_metadata is not None:
             if old_metadata['start_time'] >= start_time:

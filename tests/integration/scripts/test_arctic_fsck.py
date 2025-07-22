@@ -1,5 +1,5 @@
 import itertools
-from datetime import datetime as dt, timedelta as dtd
+from datetime import datetime as dt, timedelta as dtd, timezone
 
 import bson
 import pytest
@@ -35,7 +35,7 @@ def test_cleanup_orphaned_chunks(mongo_host, library, data, dry_run, fw_pointers
     Check that we do / don't cleanup chunks based on the dry-run
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(days=1, seconds=1)
+        yesterday = dt.now(timezone.utc) - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
         with patch("bson.ObjectId", return_value=_id):
             library.write('symbol', data, prune_previous_version=False)
@@ -63,7 +63,7 @@ def test_cleanup_noop(mongo_host, library, data, dry_run, fw_pointers_config):
     Check that we do / don't cleanup chunks based on the dry-run
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(days=1, seconds=1)
+        yesterday = dt.now(timezone.utc) - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
         with patch("bson.ObjectId", return_value=_id):
             library.write('symbol', data, prune_previous_version=False)
@@ -91,7 +91,7 @@ def test_cleanup_orphaned_chunks_ignores_recent(mongo_host, library, data, dry_r
     We don't cleanup any chunks in the range of today.  That's just asking for trouble
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(hours=12)
+        yesterday = dt.now(timezone.utc) - dtd(hours=12)
         _id = bson.ObjectId.from_datetime(yesterday)
         with patch("bson.ObjectId", return_value=_id):
             library.write('symbol', data, prune_previous_version=False)
@@ -115,7 +115,7 @@ def test_cleanup_orphaned_chunk_doesnt_break_versions(mongo_host, library, data,
     Check that a chunk pointed to by more than one version, aren't inadvertently cleared
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(days=1, seconds=1)
+        yesterday = dt.now(timezone.utc) - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
         with patch("bson.ObjectId", return_value=_id):
             library.write('symbol', data, prune_previous_version=False)
@@ -145,7 +145,7 @@ def test_cleanup_orphaned_snapshots(mongo_host, library, data, dry_run, fw_point
     Check that we do / don't cleanup chunks based on the dry-run
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(days=1, seconds=1)
+        yesterday = dt.now(timezone.utc) - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
         library.write('symbol', data, prune_previous_version=False)
         with patch("bson.ObjectId", return_value=_id):
@@ -182,7 +182,7 @@ def test_cleanup_orphaned_snapshots_nop(mongo_host, library, data, dry_run, fw_p
     Check that we do / don't cleanup chunks based on the dry-run
     """
     with FwPointersCtx(fw_pointers_config):
-        yesterday = dt.utcnow() - dtd(days=1, seconds=1)
+        yesterday = dt.now(timezone.utc) - dtd(days=1, seconds=1)
         _id = bson.ObjectId.from_datetime(yesterday)
         library.write('symbol', data, prune_previous_version=False)
         with patch("bson.ObjectId", return_value=_id):
@@ -216,7 +216,7 @@ def test_dont_cleanup_recent_orphaned_snapshots(mongo_host, library, data, dry_r
     Check that we do / don't cleanup chunks based on the dry-run
     """
     with FwPointersCtx(fw_pointers_config):
-        today = dt.utcnow() - dtd(hours=12, seconds=1)
+        today = dt.now(timezone.utc) - dtd(hours=12, seconds=1)
         _id = bson.ObjectId.from_datetime(today)
         library.write('symbol', data, prune_previous_version=False)
         with patch("bson.ObjectId", return_value=_id):
