@@ -943,7 +943,7 @@ def test_daterange_when_end_beyond_chunk_index_no_start(library):
                               2015-08-10 00:00:00,200012,2.0
                               2015-08-10 00:00:00,200016,3.0
                               2015-08-11 00:00:00,200005,1.0
-                              2015-08-11 00:00:00,200012,2,0
+                              2015-08-11 00:00:00,200012,2.0
                               2015-08-11 00:00:00,200016,3.0"""), parse_dates=[0],
                   names=['date', 'security_id', 'value']).set_index(['date', 'security_id'])
     library.write('MYARR', df)
