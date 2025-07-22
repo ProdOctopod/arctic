@@ -9,6 +9,10 @@ from .store._pandas_ndarray_store import PandasDataFrameStore, PandasSeriesStore
 from .store.version_store import register_versioned_storage, register_version
 
 try:
+    # Modern approach (Python 3.8+)
+    from importlib.metadata import version, PackageNotFoundError
+    str_version = version(__name__).strip()
+except ImportError:
     from pkg_resources import get_distribution
     str_version = get_distribution(__name__).version.strip()
     int_parts = tuple(int(x) for x in str_version.split('.'))
@@ -20,6 +24,8 @@ except Exception:
     __version_numerical__ = 0
 else:
     __version__ = str_version
+    int_parts = tuple(int(x) for x in str_version.split('.'))
+    num_version = sum([1000 ** i * v for i, v in enumerate(reversed(int_parts))])
     __version_parts__ = int_parts
     __version_numerical__ = num_version
 
